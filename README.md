@@ -22,6 +22,8 @@ Technical improvements"
 - The css is contained inside the jsp file. It should be extracted an placed in a separate file. I created a empty connect4.css but didn't manage to finish it. Also, using less instead of css can be a good option. 
 - The front end uses plain javascript + jquery. A javascript framework could have been used to structure the code better. 
 - Adding comments, javadocs + code refactoring.
+- The endpoint for transfering the game current status sends the last movement. Not the entire board position. So if the player closes the url and opens it again. He will lose the board position. May be it would be a good idea to send the entire board.
+- Use a better mechanism than the setInterval for receiving the board status.
 - etc
 
 
