@@ -131,7 +131,7 @@ function initBoard(totalRows, totalCols) {
 
 	function getStatus() {
 
-		$.getJSON("/connect4/gameStatus", function(data) {
+		$.getJSON("/gameStatus", function(data) {
 			var col = data.lastMoveCol;
 			var row = data.lastMoveRow;
 			var lastPlayer = data.lastMovePlayer;
@@ -159,7 +159,7 @@ function initBoard(totalRows, totalCols) {
 		});
 	}
 	function makeMove(row, column) {
-		$.getJSON("/connect4/makeMove?row=" + row + "&col=" + column
+		$.getJSON("/makeMove?row=" + row + "&col=" + column
 				+ "&player=" + playerId, function(data) {
 			if (data.validMove == true) {
 				var colOnScreen = $('aside')[column];
@@ -169,7 +169,7 @@ function initBoard(totalRows, totalCols) {
 		});
 	}
 	function newGame () {
-		$.get("/connect4/newGame?player="+playerId, function(data){ 
+		$.get("/newGame?player="+playerId, function(data){ 
 	    	var jsonResponse = $.parseJSON(data);
 	    	var rows = jsonResponse.rows;
 	    	var cols = jsonResponse.columns;
