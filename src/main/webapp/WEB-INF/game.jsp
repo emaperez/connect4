@@ -28,7 +28,7 @@
 	border: 3px solid black;
 }
 
-#board {
+#container {
 	text-align: center;
 }
 
@@ -95,11 +95,21 @@ h1 {
 	visibility: visible;
 	background-color: #1744BF;
 }
+
+.gameStatus {
+	display: block;
+	margin-top: 10px;
+	font-weight: bold;
+	font-family: sans-serif;
+	font-size: larger;
+}
 </style>
 <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script type="text/javascript">
-var playerId,color;
+var playerId,color,rows,cols;
+
 $( document ).ready(function() {
+	$("#newGameButton").hide();
 	playerId = $('#playerId').val();
 	color = $('#color').val();
 	$('#newGameButton').on( "click", function () {
@@ -112,10 +122,11 @@ $( document ).ready(function() {
 
 
 function initBoard(totalRows, totalCols) {
-
-	var col, board = $('<div>').addClass('board');
+	$('#container').children().remove();
+	$('#statusMessage').text('');
+	var board = $('<div>').addClass('board');
 	for (var i=0;i< totalCols;i++) {
-		col = $('<aside id="'+i+'">').appendTo(board);
+		var col = $('<aside id="'+i+'">').appendTo(board);
 		for (j=0;j<totalRows ; j++) {
 			var square = $('<div id="'+j+'">');
 			square.on( "click", function () {
@@ -125,7 +136,7 @@ function initBoard(totalRows, totalCols) {
 			}); 
 			square.appendTo(col);
 		}
-		$('#board').append(board);
+		$('#container').append(board);
 	}
 }
 
@@ -144,16 +155,25 @@ function initBoard(totalRows, totalCols) {
 			}
 		
 			switch (status) {
+					case "NOT_STARTED":
+						initBoard(rows,cols);
+						break;
 					case "PLAYER2_WON":
-						$('#statusMessage').html("Player 2 has won the game");
+						$('#statusMessage').text("Player 2 has won the game!!");
+						$('div').off();
+						$("#newGameButton").show();
 						break;
 					case "PLAYER1_WON":
-						$('#statusMessage').html("Player 1 has won the game");
+						$('#statusMessage').text("Player 1 has won the game!!");
+						$('div').off();
+						$("#newGameButton").show();
 						break;
 					case "DRAW":
-						$('#statusMessage').html("The game is draw");
+						$('#statusMessage').text("The game is draw");
+						$('div').off();
+						$("#newGameButton").show();
 						break;
-		
+					
 					}
 
 		});
@@ -164,17 +184,16 @@ function initBoard(totalRows, totalCols) {
 			if (data.validMove == true) {
 				var colOnScreen = $('aside')[column];
 				$(colOnScreen).children('#' + row).addClass("circle " + color);
-				console.log("Data: " + data.validMove);
 			}
 		});
 	}
 	function newGame () {
 		$.get("/newGame?player="+playerId, function(data){ 
 	    	var jsonResponse = $.parseJSON(data);
-	    	var rows = jsonResponse.rows;
-	    	var cols = jsonResponse.columns;
-	    	var started = jsonResponse.started;
+	    	rows = jsonResponse.rows;
+	    	cols = jsonResponse.columns;
 	    	initBoard (rows,cols);
+	    	$("#newGameButton").hide();
 	    });
 	}
 </script>
@@ -185,7 +204,9 @@ function initBoard(totalRows, totalCols) {
 	<h1>Connect 4</h1>
 
 	<h3>Player : ${playerId}</h3>
-	<span id="statusMessage"><span> <input type="button" value="newGame" id="newGameButton" />
-	<div id='board'></div>
+	 <input type="button" value="newGame" id="newGameButton" />
+	<span id="statusMessage" class="gameStatus"></span>
+	<div id='container'></div>
+	
 </body>
 </html>
